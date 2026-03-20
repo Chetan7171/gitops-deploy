@@ -1,0 +1,33 @@
+image:
+  repository: 561493798218.dkr.ecr.ap-south-1.amazonaws.com/app-service
+  tag: "latest"
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8080
+
+env:
+  databaseUrl: "postgres://postgres:postgres@postgres:5432/users?sslmode=disable"
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+
+ingress:
+  enabled: true
+  className: alb
+  hosts:
+    - host: app.yourdomain.com
+      paths:
+        - /
