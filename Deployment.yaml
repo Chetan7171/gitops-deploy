@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app-service.fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "app-service.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "app-service.name" . }}
+    spec:
+      containers:
+        - name: app-service
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: DATABASE_URL
+              value: "{{ .Values.env.databaseUrl }}"
+          ports:
+            - containerPort: 8080
